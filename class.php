@@ -113,7 +113,7 @@ if ( !class_exists('NewpostCatch') ) {
 <?php
 	if( $npc_query->have_posts() ) :
 		while( $npc_query->have_posts() ) : $npc_query->the_post();
-		$date = ( $instance['date']['active'] == 1 ) ? '<span class="date">' . get_the_time( get_option('date_format') ) . '</span>' : '';
+		$date = ( isset( $instance['date']['active'] ) && $instance['date']['active'] == 1 ) ? '<span class="date">' . get_the_time( get_option('date_format') ) . '</span>' : '';
 
 			if( has_post_thumbnail() ) {
 				$thumb_id = get_post_thumbnail_id();
