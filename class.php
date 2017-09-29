@@ -71,8 +71,8 @@ if ( !class_exists('NewpostCatch') ) {
 			extract( $args );
 
 			$title		= ( isset( $instance['title'] ) ) ? apply_filters( 'NewpostCatch_widget_title', $instance['title'] ) : '';
-			$width		= ( isset( $instance['width'] ) ) ? apply_filters( 'NewpostCatch_widget_width', $instance['width'] ) : '';
-			$height		= ( isset( $instance['height'] ) ) ? apply_filters( 'NewpostCatch_widget_height', $instance['height'] ) : '';
+			$width		= ( isset( $instance['width'] ) ) ? apply_filters( 'NewpostCatch_widget_width', $instance['width'] ) : 10;
+			$height		= ( isset( $instance['height'] ) ) ? apply_filters( 'NewpostCatch_widget_height', $instance['height'] ) : 10;
 			$number		= ( isset( $instance['number'] ) ) ? apply_filters( 'NewpostCatch_widget_number', $instance['number'] ) : '';
 			$ignore		= ( isset( $instance['ignore_check']['active'] ) ) ? apply_filters( 'NewpostCatch_widget_ignore', $instance['ignore_check']['active'] ) : null;
 			$css			= ( isset( $instance['css']['active'] ) ) ? apply_filters( 'NewpostCatch_widget_css', $instance['css']['active'] ) : '';
