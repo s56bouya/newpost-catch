@@ -9,31 +9,26 @@ Please the name of the file to create and "newpost-catch.css". The other is the 
 
 */
 
-#npcatch li{
-	overflow:hidden;
-	clear:both;
-	margin:0px 0px 0px;
+#npcatch li {
+	margin: 0;
+	overflow: hidden;
+	clear: both;
+	vertical-align: top;
 }
 
-#npcatch img{
-	float:left;
-	padding:5px 10px;
+#npcatch li a {
+	display: table;
+	padding: .5rem 0;
+	width: 100%;
 }
 
-#npcatch .title{
-	width:135px;
-	float:left;
-	padding:5px 5px 5px 0px;
+#npcatch img {
+	float: left;
+	padding: 0 .5rem 0 0;
 }
 
-#npcatch li:hover{
+#npcatch .title {
+	overflow: hidden;
+	display: block;
 }
 
-#npcatch li:hover .title{
-}
-
-#npcatch li:hover .title a{
-}
-
-#npcatch li:hover .date{
-}
