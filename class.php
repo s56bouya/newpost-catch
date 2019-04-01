@@ -43,7 +43,7 @@ if ( !class_exists('NewpostCatch') ) {
 				}
 
 				if( in_array('1' , $options) ){
-					$css_path = plugins_url('newpost-catch/style.css');
+					$css_path = plugins_url(basename( rtrim(dirname(__FILE__), '/') ) . '/style.css');
 				} else {
 					$css_path = ( @file_exists( STYLESHEETPATH.'/css/newpost-catch.css' ) ) ? get_stylesheet_directory_uri() . '/css/newpost-catch.css' : '' ;
 				}
