@@ -3,7 +3,7 @@ Contributors: s56bouya
 Donate link: http://www.imamura.biz/blog/newpost-catch
 Tags: widget, plugin, posts, sidebar, image, images, thumb, thumbnail
 Requires at least: 3.3.1
-Tested up to: 5.1.3
+Tested up to: 5.1.1
 Stable tag: 1.3.7
 
 Thumbnails in new articles setting widget.
@@ -94,7 +94,7 @@ When the post other than, post_type of the current page is the value of the prio
 == Changelog ==
 
 = 1.3.7 =
-* Compatibility check with WP 5.1.3
+* Compatibility check with WP 5.1.1
 
 = 1.3.6 =
 * Compatibility check with WP 4.9.7
