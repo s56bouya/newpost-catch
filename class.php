@@ -21,7 +21,8 @@ if ( !class_exists('NewpostCatch') ) {
 			$this->default_thumbnail = apply_filters('npc_thumb', $this->pluginDir . '/no_thumb.png' );
 
 			// print stylesheet
-			add_action( 'get_header', array( &$this, 'enqueue_stylesheet' ) );
+//			add_action( 'get_header', array( &$this, 'enqueue_stylesheet' ) );
+			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_stylesheet' ) );
 
 			// activate textdomain for translations
 			add_action( 'init', array( &$this, 'NewpostCatch_textdomain') );
@@ -40,6 +41,7 @@ if ( !class_exists('NewpostCatch') ) {
 				foreach( $options as $key => $val ) {
 					$options[$key] = $val['css']['active'];
 				}
+
 				if( in_array('1' , $options) ){
 					$css_path = plugins_url('newpost-catch/style.css');
 				} else {
@@ -90,49 +92,49 @@ if ( !class_exists('NewpostCatch') ) {
 
 			$sticky_posts = get_option( 'sticky_posts' );
 
-				$npc_args = array(
-					'post_type' => $post_type,
-					'post_status' => 'publish',
-					'cat' => $cat,
-					'posts_per_page' => $number,
-					'orderby' => 'date',
-					'order' => 'DESC'
-				);
+			$npc_args = array(
+				'post_type' => $post_type,
+				'post_status' => 'publish',
+				'cat' => $cat,
+				'posts_per_page' => $number,
+				'orderby' => 'date',
+				'order' => 'DESC'
+			);
 
-				//先頭に固定表示している場合
-				if( ! empty( $sticky_posts ) ){
-					$npc_args['ignore_sticky_posts'] = 0;
-					if( empty( $ignore )){
-						$npc_args['post__not_in'] = $sticky_posts;
-					}
+			//先頭に固定表示している場合
+			if( ! empty( $sticky_posts ) ){
+				$npc_args['ignore_sticky_posts'] = 0;
+				if( empty( $ignore )){
+					$npc_args['post__not_in'] = $sticky_posts;
 				}
-
-				$npc_query = new WP_Query( $npc_args );
-		?>
-<ul id="npcatch">
-<?php
-	if( $npc_query->have_posts() ) :
-		while( $npc_query->have_posts() ) : $npc_query->the_post();
-		$date = ( isset( $instance['date']['active'] ) && $instance['date']['active'] == 1 ) ? '<span class="date">' . get_the_time( get_option('date_format') ) . '</span>' : '';
-
-			if( has_post_thumbnail() ) {
-				$thumb_id = get_post_thumbnail_id();
-				$thumb_url = wp_get_attachment_image_src($thumb_id);
-				$thumb_url = $thumb_url[0];
-			} else {
-				$thumb_url = $this->no_thumb_image();
 			}
-?>
-<li><a href="<?php echo esc_url( get_permalink() ); ?>" title="<?php esc_attr( the_title() ); ?>"><img src="<?php echo esc_url( $thumb_url ); ?>" width="<?php echo esc_attr( $width ); ?>" height="<?php echo esc_attr( $height ); ?>" alt="<?php the_title(); ?>" title="<?php the_title(); ?>"/><span class="title"><?php the_title(); echo $date; ?></span></a></li>
-<?php
-		endwhile;
-	else :
-?>
-<p>no post</p>
-<?php endif; wp_reset_postdata(); ?>
-</ul>
 
-<?php
+			$npc_query = new WP_Query( $npc_args );
+			?>
+					<ul id="npcatch">
+			  <?php
+			  if( $npc_query->have_posts() ) :
+				  while( $npc_query->have_posts() ) : $npc_query->the_post();
+					  $date = ( isset( $instance['date']['active'] ) && $instance['date']['active'] == 1 ) ? '<span class="date">' . get_the_time( get_option('date_format') ) . '</span>' : '';
+
+					  if( has_post_thumbnail() ) {
+						  $thumb_id = get_post_thumbnail_id();
+						  $thumb_url = wp_get_attachment_image_src($thumb_id);
+						  $thumb_url = $thumb_url[0];
+					  } else {
+						  $thumb_url = $this->no_thumb_image();
+					  }
+					  ?>
+										<li><a href="<?php echo esc_url( get_permalink() ); ?>" title="<?php esc_attr( the_title() ); ?>"><img src="<?php echo esc_url( $thumb_url ); ?>" width="<?php echo esc_attr( $width ); ?>" height="<?php echo esc_attr( $height ); ?>" alt="<?php the_title(); ?>" title="<?php the_title(); ?>"/><span class="title"><?php the_title(); echo $date; ?></span></a></li>
+					  <?php
+				  endwhile;
+			  else :
+				  ?>
+								<p>no post</p>
+			  <?php endif; wp_reset_postdata(); ?>
+					</ul>
+
+			<?php
 			echo $after_widget;
 		}
 
@@ -168,79 +170,79 @@ if ( !class_exists('NewpostCatch') ) {
 
 			// define default value
 			$defaults = array(
-						'title'		=> __('LatestPost(s)' , 'newpost-catch'),
-						'width'		=> 10,
-						'height'	=> 10,
-						'number'	=> 5,
-						'date'		=> array( 'active' => false ),
-						'ignore_check'	=> array( 'active' => false ),
-						'css'		=> array( 'active' => true ),
-						'cat'		=> NULL,
-						'post_type'	=> 'post',
-				    );
+				'title'		=> __('LatestPost(s)' , 'newpost-catch'),
+				'width'		=> 10,
+				'height'	=> 10,
+				'number'	=> 5,
+				'date'		=> array( 'active' => false ),
+				'ignore_check'	=> array( 'active' => false ),
+				'css'		=> array( 'active' => true ),
+				'cat'		=> NULL,
+				'post_type'	=> 'post',
+			);
 
 			$instance = wp_parse_args( (array) $instance, $defaults );
-?>
-			<p>
-			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title' , 'newpost-catch'); ?></label>
-			<input id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" class="widefat" value="<?php echo esc_attr($instance['title']); ?>" />
-			</p>
-			<p>
-			<?php _e('Thumbnail Size' , 'newpost-catch'); ?><br />
-			<label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Width' , 'newpost-catch'); ?></label>
-			<input id="<?php echo $this->get_field_id('width'); ?>" name="<?php echo $this->get_field_name( 'width' ); ?>" type="text" style="width:50px" value="<?php echo esc_attr($instance['width']); ?>" /> px
-			<br />
-			<label for="<?php echo $this->get_field_id('height'); ?>"><?php _e('Height' , 'newpost-catch'); ?></label>
-			<input id="<?php echo $this->get_field_id('height'); ?>" name="<?php echo $this->get_field_name('height'); ?>" type="text" style="width:50px;" value="<?php echo esc_attr($instance['height']); ?>" /> px
-			</p>
-			<p>
-			<label for="<?php echo $this->get_field_id('number'); ?>"><?php _e('Show post(s)' , 'newpost-catch'); ?></label>
-			<input style="width:30px;" id="<?php echo $this->get_field_id('number'); ?>" name="<?php echo $this->get_field_name('number'); ?>" type="text" value="<?php echo esc_attr($instance['number']); ?>" /> <?php _e('Post(s)', 'newpost-catch'); ?>
-			</p>
-			<p>
-			<input type="checkbox" class="checkbox" value='1' <?php echo ($instance['date']['active']) ? 'checked="checked"' : ''; ?> id="<?php echo $this->get_field_id( 'date' ); ?>" name="<?php echo $this->get_field_name( 'date' ); ?>" /> <label for="<?php echo $this->get_field_id( 'date' ); ?>"><?php _e('Display date', 'newpost-catch'); ?></label>
-			</p>
-			<p>
-			<input type="checkbox" class="checkbox" value='1' <?php echo ($instance['ignore_check']['active']) ? 'checked="checked"' : ''; ?> id="<?php echo $this->get_field_id( 'ignore_check' ); ?>" name="<?php echo $this->get_field_name( 'ignore_check' ); ?>" /> <label for="<?php echo $this->get_field_id( 'ignore_check' ); ?>"><?php _e('Display sticky post', 'newpost-catch'); ?></label>
-			</p>
-			<p>
-	    <input type="checkbox" class="checkbox" value='1' <?php if($instance['css']['active']){ echo 'checked="checked"'; } else { echo ''; } ?> id="<?php echo $this->get_field_id( 'css' ); ?>" name="<?php echo $this->get_field_name( 'css' ); ?>" /> <label for="<?php echo $this->get_field_id( 'css' ); ?>"><?php _e('Use default css', 'newpost-catch'); ?></label>
-			</p>
+			?>
+					<p>
+						<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title' , 'newpost-catch'); ?></label>
+						<input id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" class="widefat" value="<?php echo esc_attr($instance['title']); ?>" />
+					</p>
+					<p>
+			  <?php _e('Thumbnail Size' , 'newpost-catch'); ?><br />
+						<label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Width' , 'newpost-catch'); ?></label>
+						<input id="<?php echo $this->get_field_id('width'); ?>" name="<?php echo $this->get_field_name( 'width' ); ?>" type="text" style="width:50px" value="<?php echo esc_attr($instance['width']); ?>" /> px
+						<br />
+						<label for="<?php echo $this->get_field_id('height'); ?>"><?php _e('Height' , 'newpost-catch'); ?></label>
+						<input id="<?php echo $this->get_field_id('height'); ?>" name="<?php echo $this->get_field_name('height'); ?>" type="text" style="width:50px;" value="<?php echo esc_attr($instance['height']); ?>" /> px
+					</p>
+					<p>
+						<label for="<?php echo $this->get_field_id('number'); ?>"><?php _e('Show post(s)' , 'newpost-catch'); ?></label>
+						<input style="width:30px;" id="<?php echo $this->get_field_id('number'); ?>" name="<?php echo $this->get_field_name('number'); ?>" type="text" value="<?php echo esc_attr($instance['number']); ?>" /> <?php _e('Post(s)', 'newpost-catch'); ?>
+					</p>
+					<p>
+						<input type="checkbox" class="checkbox" value='1' <?php echo ($instance['date']['active']) ? 'checked="checked"' : ''; ?> id="<?php echo $this->get_field_id( 'date' ); ?>" name="<?php echo $this->get_field_name( 'date' ); ?>" /> <label for="<?php echo $this->get_field_id( 'date' ); ?>"><?php _e('Display date', 'newpost-catch'); ?></label>
+					</p>
+					<p>
+						<input type="checkbox" class="checkbox" value='1' <?php echo ($instance['ignore_check']['active']) ? 'checked="checked"' : ''; ?> id="<?php echo $this->get_field_id( 'ignore_check' ); ?>" name="<?php echo $this->get_field_name( 'ignore_check' ); ?>" /> <label for="<?php echo $this->get_field_id( 'ignore_check' ); ?>"><?php _e('Display sticky post', 'newpost-catch'); ?></label>
+					</p>
+					<p>
+						<input type="checkbox" class="checkbox" value='1' <?php if($instance['css']['active']){ echo 'checked="checked"'; } else { echo ''; } ?> id="<?php echo $this->get_field_id( 'css' ); ?>" name="<?php echo $this->get_field_name( 'css' ); ?>" /> <label for="<?php echo $this->get_field_id( 'css' ); ?>"><?php _e('Use default css', 'newpost-catch'); ?></label>
+					</p>
 			<?php _e('Post types' , 'newpost-catch'); ?><br />
-<?php
-	$args = array(
-		'public'   => true,
-	);
+			<?php
+			$args = array(
+				'public'   => true,
+			);
 
-	$output = 'objects';
-	$operator = 'and';
+			$output = 'objects';
+			$operator = 'and';
 
-	$post_types = get_post_types( $args, $output, $operator );
-	foreach ( $post_types as $post_type ) {
-		if( $post_type->name !== 'attachment' ){
-?>
-   <p><input type="radio" id="<?php echo $this->get_field_name($post_type->name); ?>" name="<?php echo $this->get_field_name('post_type'); ?>" value="<?php echo $post_type->name; ?>" <?php echo ( $instance['post_type'] == $post_type->name ) ? 'checked="checked"' : ''; ?> > <label for="<?php echo $this->get_field_name($post_type->name); ?>"><?php echo $post_type->labels->singular_name . '(' . $post_type->name . ')'; ?></label></p>
-<?php
-		}
-	}
-?>
-<?php if( $instance['post_type'] == 'post' ){ ?>
-			<p>
-			<label for="<?php echo $this->get_field_id('cat'); ?>"><?php _e('Display category(ies)' , 'newpost-catch'); ?></label>
-			<input id="<?php echo $this->get_field_id('cat'); ?>" name="<?php echo $this->get_field_name('cat'); ?>" type="text" class="widefat" value="<?php echo esc_attr($instance['cat']); ?>" />
-			<span><a href="<?php echo get_bloginfo('url') . '/wp-admin/edit-tags.php?taxonomy=category'; ?>"><?php _e('Check the category ID' , 'newpost-catch'); ?></a></span>
-			</p>
-<?php } ?>
-			<p>
-				<?php _e('Use shortcode' , 'newpost-catch'); ?>
-				<?php _e('Can use the shortcode in a textwidget and theme files.' , 'newpost-catch'); ?> <a href="http://wordpress.org/plugins/newpost-catch/faq/" target="_blank">FAQ</a>
-			</p>
-			<p>
-				<?php _e('Contact/Follow' , 'newpost-catch'); ?>
-				<a href="https://twitter.com/NewpostCatch" target="_blank">Twitter</a>
-				<a href="https://www.facebook.com/NewpostCatch" target="_blank">Facebook</a>
-			</p>
-<?php
+			$post_types = get_post_types( $args, $output, $operator );
+			foreach ( $post_types as $post_type ) {
+				if( $post_type->name !== 'attachment' ){
+					?>
+									<p><input type="radio" id="<?php echo $this->get_field_name($post_type->name); ?>" name="<?php echo $this->get_field_name('post_type'); ?>" value="<?php echo $post_type->name; ?>" <?php echo ( $instance['post_type'] == $post_type->name ) ? 'checked="checked"' : ''; ?> > <label for="<?php echo $this->get_field_name($post_type->name); ?>"><?php echo $post_type->labels->singular_name . '(' . $post_type->name . ')'; ?></label></p>
+					<?php
+				}
+			}
+			?>
+			<?php if( $instance['post_type'] == 'post' ){ ?>
+						<p>
+							<label for="<?php echo $this->get_field_id('cat'); ?>"><?php _e('Display category(ies)' , 'newpost-catch'); ?></label>
+							<input id="<?php echo $this->get_field_id('cat'); ?>" name="<?php echo $this->get_field_name('cat'); ?>" type="text" class="widefat" value="<?php echo esc_attr($instance['cat']); ?>" />
+							<span><a href="<?php echo get_bloginfo('url') . '/wp-admin/edit-tags.php?taxonomy=category'; ?>"><?php _e('Check the category ID' , 'newpost-catch'); ?></a></span>
+						</p>
+			<?php } ?>
+					<p>
+			  <?php _e('Use shortcode' , 'newpost-catch'); ?>
+			  <?php _e('Can use the shortcode in a textwidget and theme files.' , 'newpost-catch'); ?> <a href="http://wordpress.org/plugins/newpost-catch/faq/" target="_blank">FAQ</a>
+					</p>
+					<p>
+			  <?php _e('Contact/Follow' , 'newpost-catch'); ?>
+						<a href="https://twitter.com/NewpostCatch" target="_blank">Twitter</a>
+						<a href="https://www.facebook.com/NewpostCatch" target="_blank">Facebook</a>
+					</p>
+			<?php
 		}
 	}
 }

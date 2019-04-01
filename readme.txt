@@ -3,8 +3,8 @@ Contributors: s56bouya
 Donate link: http://www.imamura.biz/blog/newpost-catch
 Tags: widget, plugin, posts, sidebar, image, images, thumb, thumbnail
 Requires at least: 3.3.1
-Tested up to: 4.8.2
-Stable tag: 1.3.5
+Tested up to: 5.1.3
+Stable tag: 1.3.7
 
 Thumbnails in new articles setting widget.
 
@@ -21,7 +21,7 @@ Thumbnails in new articles setting widget.
 3. Activate the plugin through the 'Plugins' menu in WordPress
 4. Add the widget to your sidebar from Appearance->Widgets and configure the widget options.
 
-Required PHP5.3+
+Required PHP5.6+
 
 ### Apply your own css style
 
@@ -92,6 +92,12 @@ When the post other than, post_type of the current page is the value of the prio
 3. Is simple to add the side bar, to set the size of the thumbnail, posts, post date
 
 == Changelog ==
+
+= 1.3.7 =
+* Compatibility check with WP 5.1.3
+
+= 1.3.6 =
+* Compatibility check with WP 4.9.7
 
 = 1.3.5 =
 * Compatibility check with WP 4.8.2
