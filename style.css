@@ -11,26 +11,23 @@ Please the name of the file to create and "newpost-catch.css". The other is the 
 
 #npcatch li {
 	margin: 0;
-	overflow: hidden;
-	clear: both;
-	vertical-align: top;
 }
 
 #npcatch li a {
-	display: table;
-	padding: .5rem 0;
+	display: flex;
+	padding: 0.5rem 0;
 	width: 100%;
 }
 
-#npcatch img {
-	float: left;
-	padding: 0 .5rem 0 0;
-	max-width: 100%;
+#npcatch figure {
+	padding: 0 0.5rem 0 0;
+}
+
+#npcatch img{
 	height: auto;
 }
 
 #npcatch .title {
-	overflow: hidden;
 	display: block;
 }
 

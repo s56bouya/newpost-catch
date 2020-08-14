@@ -18,7 +18,7 @@ if ( !class_exists('NewpostCatch') ) {
 			if ( empty($this->pluginDir) ) $this->pluginDir = WP_PLUGIN_URL . '/newpost-catch';
 
 			// default thumbnail
-			$this->default_thumbnail = apply_filters('npc_thumb', $this->pluginDir . '/no_thumb.png' );
+			$this->default_thumbnail = apply_filters( 'npc_thumb', $this->pluginDir . '/no_thumb.png' );
 
 			// print stylesheet
 //			add_action( 'get_header', array( &$this, 'enqueue_stylesheet' ) );
@@ -111,7 +111,7 @@ if ( !class_exists('NewpostCatch') ) {
 
 			$npc_query = new WP_Query( $npc_args );
 			?>
-					<ul id="npcatch">
+					<ul id="npcatch" class="npcatch">
 			  <?php
 			  if( $npc_query->have_posts() ) :
 				  while( $npc_query->have_posts() ) : $npc_query->the_post();
@@ -124,8 +124,22 @@ if ( !class_exists('NewpostCatch') ) {
 					  } else {
 						  $thumb_url = $this->no_thumb_image();
 					  }
+
+					  $post_id = $npc_query->post->ID;
+					  $post_title = apply_filters( 'npc_post_title', get_the_title(), $post_id );
+			  		$post_permalink = apply_filters( 'npc_post_permalink', get_permalink(), $post_id );
 					  ?>
-										<li><a href="<?php echo esc_url( get_permalink() ); ?>" title="<?php esc_attr( the_title() ); ?>"><img src="<?php echo esc_url( $thumb_url ); ?>" width="<?php echo esc_attr( $width ); ?>" height="<?php echo esc_attr( $height ); ?>" alt="<?php the_title(); ?>" title="<?php the_title(); ?>"/><span class="title"><?php the_title(); echo $date; ?></span></a></li>
+						<li>
+							<a href="<?php echo esc_url( $post_permalink ); ?>" title="<?php echo esc_attr( $post_title ); ?>">
+								<figure>
+									<img src="<?php echo esc_url( $thumb_url ); ?>" width="<?php echo esc_attr( $width ); ?>" height="<?php echo esc_attr( $height ); ?>" alt="<?php echo esc_attr( $post_title ); ?>" title="<?php echo esc_attr( $post_title ); ?>"/>
+								</figure>
+								<div class="detail">
+									<span class="title"><?php echo wp_kses_post( $post_title ); ?></span>
+									<?php echo $date; ?>
+								</div>
+							</a>
+						</li>
 					  <?php
 				  endwhile;
 			  else :
@@ -238,9 +252,8 @@ if ( !class_exists('NewpostCatch') ) {
 			  <?php _e('Can use the shortcode in a textwidget and theme files.' , 'newpost-catch'); ?> <a href="http://wordpress.org/plugins/newpost-catch/faq/" target="_blank">FAQ</a>
 					</p>
 					<p>
-			  <?php _e('Contact/Follow' , 'newpost-catch'); ?>
-						<a href="https://twitter.com/NewpostCatch" target="_blank">Twitter</a>
-						<a href="https://www.facebook.com/NewpostCatch" target="_blank">Facebook</a>
+			  <?php _e('Support' , 'newpost-catch'); ?>
+						<a href="https://support.animagate.com/community/" target="_blank">User Community</a>
 					</p>
 			<?php
 		}
@@ -320,10 +333,16 @@ if ( !class_exists( 'NewpostCatch_SC' ) ) {
 						$thumb_url = $npc_construct->no_thumb_image();
 					}
 
-					$html .= '<li><a href="' . esc_url( get_permalink() ) . '" title="' . get_the_title() . '">';
-					$html .= '<img src="' . esc_url( $thumb_url ) . '" width="' . esc_attr( $width ) . '" height="' . esc_attr( $height ) . '" alt="' . get_the_title() . '" title="' . get_the_title() . '" /></a>';
-					$html .= '<span class="title"><a href="' . esc_url( get_permalink() ) . '" title="' . get_the_title() . '">' . get_the_title() . $get_date;
-					$html .= '</a></span></li>';
+					$post_id = $npc_sc_query->post->ID;
+					$post_title = apply_filters( 'npc_sc_post_title', get_the_title(), $post_id );
+					$post_permalink = apply_filters( 'npc_sc_post_permalink', get_permalink(), $post_id );
+
+					$html .= '<li><a href="' . esc_url( $post_permalink ) . '" title="' . esc_attr( $post_title ) . '">';
+					$html .= '<figure><img src="' . esc_url( $thumb_url ) . '" width="' . esc_attr( $width ) . '" height="' . esc_attr( $height ) . '" alt="' . esc_attr( $post_title ) . '" title="' . esc_attr( $post_title ) . '" /></figure>';
+					$html .= '<div class="detail">';
+					$html .= '<span class="title">' . wp_kses_post( $post_title ) . '</span>';
+					$html .= $get_date;
+					$html .= '</div></a></span></li>';
 				endwhile;
 				$html .= '</ul>';
 			endif;
