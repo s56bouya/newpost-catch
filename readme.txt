@@ -5,7 +5,7 @@ Tags: widget, plugin, posts, sidebar, image, images, thumb, thumbnail
 Requires at least: 5.1
 Requires PHP: 7.0
 Tested up to: 5.5
-Stable tag: 1.3.8
+Stable tag: 1.3.9
 
 Thumbnails in new articles setting widget.
 

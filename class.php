@@ -115,7 +115,7 @@ if ( !class_exists('NewpostCatch') ) {
 			  <?php
 			  if( $npc_query->have_posts() ) :
 				  while( $npc_query->have_posts() ) : $npc_query->the_post();
-					  $date = ( isset( $instance['date']['active'] ) && $instance['date']['active'] == 1 ) ? '<span class="date">' . get_the_time( get_option('date_format') ) . '</span>' : '';
+					  $post_date = ( isset( $instance['date']['active'] ) && $instance['date']['active'] == 1 ) ? '<span class="date">' . get_the_time( get_option('date_format') ) . '</span>' : '';
 
 					  if( has_post_thumbnail() ) {
 						  $thumb_id = get_post_thumbnail_id();
@@ -126,7 +126,7 @@ if ( !class_exists('NewpostCatch') ) {
 					  }
 
 					  $post_id = $npc_query->post->ID;
-					  $post_title = apply_filters( 'npc_post_title', get_the_title(), $post_id );
+					  $post_title = apply_filters( 'npc_post_title', '<span class="title">' . wp_kses_post( get_the_title() ) . '</span>', $post_id );
 			  		$post_permalink = apply_filters( 'npc_post_permalink', get_permalink(), $post_id );
 					  ?>
 						<li>
@@ -135,8 +135,8 @@ if ( !class_exists('NewpostCatch') ) {
 									<img src="<?php echo esc_url( $thumb_url ); ?>" width="<?php echo esc_attr( $width ); ?>" height="<?php echo esc_attr( $height ); ?>" alt="<?php echo esc_attr( $post_title ); ?>" title="<?php echo esc_attr( $post_title ); ?>"/>
 								</figure>
 								<div class="detail">
-									<span class="title"><?php echo wp_kses_post( $post_title ); ?></span>
-									<?php echo $date; ?>
+									<?php echo $post_title; ?>
+									<?php echo $post_date; ?>
 								</div>
 							</a>
 						</li>
@@ -322,7 +322,7 @@ if ( !class_exists( 'NewpostCatch_SC' ) ) {
 				while( $npc_sc_query->have_posts() ) :
 					$npc_sc_query->the_post();
 
-					$get_date = ( $date == true ) ? '<span class="date">' . esc_html( get_the_time( get_option('date_format') ) ) . '</span>' : '';
+					$post_date = ( $date == true ) ? '<span class="date">' . esc_html( get_the_time( get_option('date_format') ) ) . '</span>' : '';
 
 					$thumb_url = '';
 					if( has_post_thumbnail( get_the_ID() ) ) {
@@ -334,15 +334,15 @@ if ( !class_exists( 'NewpostCatch_SC' ) ) {
 					}
 
 					$post_id = $npc_sc_query->post->ID;
-					$post_title = apply_filters( 'npc_sc_post_title', get_the_title(), $post_id );
+					$post_title = apply_filters( 'npc_sc_post_title', '<span class="title">' . wp_kses_post( get_the_title() ) . '</span>', $post_id );
 					$post_permalink = apply_filters( 'npc_sc_post_permalink', get_permalink(), $post_id );
 
 					$html .= '<li><a href="' . esc_url( $post_permalink ) . '" title="' . esc_attr( $post_title ) . '">';
 					$html .= '<figure><img src="' . esc_url( $thumb_url ) . '" width="' . esc_attr( $width ) . '" height="' . esc_attr( $height ) . '" alt="' . esc_attr( $post_title ) . '" title="' . esc_attr( $post_title ) . '" /></figure>';
 					$html .= '<div class="detail">';
-					$html .= '<span class="title">' . wp_kses_post( $post_title ) . '</span>';
-					$html .= $get_date;
-					$html .= '</div></a></span></li>';
+					$html .= $post_title;
+					$html .= $post_date;
+					$html .= '</div></a></li>';
 				endwhile;
 				$html .= '</ul>';
 			endif;
