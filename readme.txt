@@ -2,10 +2,10 @@
 Contributors: s56bouya
 Donate link: http://www.imamura.biz/blog/newpost-catch
 Tags: widget, plugin, posts, sidebar, image, images, thumb, thumbnail
-Requires at least: 5.2
+Requires at least: 5.6
 Requires PHP: 7.2
-Tested up to: 6.0
-Stable tag: 1.3.15
+Tested up to: 6.1
+Stable tag: 1.3.16
 
 Thumbnails in new articles setting widget.
 
