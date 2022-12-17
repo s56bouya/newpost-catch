@@ -1,6 +1,6 @@
 <?php
 //NewpostCatch class
-if ( !class_exists('NewpostCatch') ) {
+if ( ! class_exists('NewpostCatch') ) {
 	class NewpostCatch extends WP_Widget {
 
 		// variables
@@ -12,7 +12,7 @@ if ( !class_exists('NewpostCatch') ) {
 			$widget_ops = array( 'description' => 'Thumbnails in new articles.' );
 
 			// widget actual processes
-			parent::__construct(false, $name = 'Newpost Catch', $widget_ops );
+			parent::__construct( false, $name = 'Newpost Catch', $widget_ops );
 
 			// plugin path
 			if ( empty($this->pluginDir) ) $this->pluginDir = WP_PLUGIN_URL . '/newpost-catch';
@@ -35,15 +35,18 @@ if ( !class_exists('NewpostCatch') ) {
 
 		// enqueue_stylesheet
 		function enqueue_stylesheet() {
+			/*
 			if( get_option( 'widget_newpostcatch' ) ){
+
 				$options = array_filter( get_option( 'widget_newpostcatch' ) );
 				unset( $options['_multiwidget'] );
+
 				foreach( $options as $key => $val ) {
 					$options[$key] = $val['css']['active'];
 				}
 
-				if( in_array('1' , $options) ){
-					$css_path = plugins_url(basename( rtrim(dirname(__FILE__), '/') ) . '/style.css');
+				if( in_array( '1' , $options ) ){
+					$css_path = plugins_url( basename( rtrim(dirname(__FILE__), '/') ) . '/style.css' );
 				} else {
 					$css_path = ( @file_exists( STYLESHEETPATH.'/css/newpost-catch.css' ) ) ? get_stylesheet_directory_uri() . '/css/newpost-catch.css' : '' ;
 				}
@@ -52,9 +55,27 @@ if ( !class_exists('NewpostCatch') ) {
 				wp_register_style( 'newpost-catch', $css_path, array() );
 				wp_enqueue_style( 'newpost-catch' );
 			}
+			*/
+
+			if( get_option( 'newpost_catch' ) ){
+
+				$options = array_filter( get_option( 'newpost_catch' ) );
+
+				if( 1 == $options['css']['active'] ){
+					$css_path = plugins_url( basename( rtrim(dirname(__FILE__), '/') ) . '/style.css' );
+				} else {
+					$css_path = ( @file_exists( STYLESHEETPATH.'/css/newpost-catch.css' ) ) ? get_stylesheet_directory_uri() . '/css/newpost-catch.css' : '' ;
+				}
+
+				// register CSS
+				wp_register_style( 'newpost-catch', $css_path, array() );
+				wp_enqueue_style( 'newpost-catch' );
+			}
+
+
 		}
 
-		//thumbnail
+		// thumbnail
 		function no_thumb_image() {
 			ob_start();
 			ob_end_clean();
@@ -69,16 +90,16 @@ if ( !class_exists('NewpostCatch') ) {
 		}
 
 		// create widget
-		function widget($args, $instance) {
+		function widget( $args, $instance ) {
 			extract( $args );
 
 			$title		= ( isset( $instance['title'] ) ) ? apply_filters( 'NewpostCatch_widget_title', $instance['title'] ) : '';
-			$width		= ( isset( $instance['width'] ) ) ? apply_filters( 'NewpostCatch_widget_width', $instance['width'] ) : 10;
-			$height		= ( isset( $instance['height'] ) ) ? apply_filters( 'NewpostCatch_widget_height', $instance['height'] ) : 10;
+			$width		= ( isset( $instance['width'] ) ) ? apply_filters( 'NewpostCatch_widget_width', $instance['width'] ) : 100;
+			$height		= ( isset( $instance['height'] ) ) ? apply_filters( 'NewpostCatch_widget_height', $instance['height'] ) : 100;
 			$number		= ( isset( $instance['number'] ) ) ? apply_filters( 'NewpostCatch_widget_number', $instance['number'] ) : '';
 			$ignore		= ( isset( $instance['ignore_check']['active'] ) ) ? apply_filters( 'NewpostCatch_widget_ignore', $instance['ignore_check']['active'] ) : null;
-			$css			= ( isset( $instance['css']['active'] ) ) ? apply_filters( 'NewpostCatch_widget_css', $instance['css']['active'] ) : '';
-			$cat			= ( isset( $instance['cat'] ) ) ? apply_filters( 'NewpostCatch_widget_cat', $instance['cat'] ) : '';
+			$css		= ( isset( $instance['css']['active'] ) ) ? apply_filters( 'NewpostCatch_widget_css', $instance['css']['active'] ) : '';
+			$cat		= ( isset( $instance['cat'] ) ) ? apply_filters( 'NewpostCatch_widget_cat', $instance['cat'] ) : '';
 
 			if( ! empty( $instance['post_type'] ) ){
 				$post_type	= apply_filters( 'NewpostCatch_widget_post_type', $instance['post_type'] );
@@ -111,50 +132,50 @@ if ( !class_exists('NewpostCatch') ) {
 
 			$npc_query = new WP_Query( $npc_args );
 			?>
-					<ul id="npcatch" class="npcatch">
-			  <?php
-			  if( $npc_query->have_posts() ) :
-				  while( $npc_query->have_posts() ) : $npc_query->the_post();
-					  $post_date = ( isset( $instance['date']['active'] ) && $instance['date']['active'] == 1 ) ? '<span class="date">' . get_the_time( get_option('date_format') ) . '</span>' : '';
+				<ul id="npcatch" class="npcatch">
+				<?php
+				if( $npc_query->have_posts() ) :
+					while( $npc_query->have_posts() ) : $npc_query->the_post();
+						$post_date = ( isset( $instance['date']['active'] ) && $instance['date']['active'] == 1 ) ? '<span class="date">' . get_the_time( get_option('date_format') ) . '</span>' : '';
 
-					  if( has_post_thumbnail() ) {
-						  $thumb_id = get_post_thumbnail_id();
-						  $thumb_url = wp_get_attachment_image_src($thumb_id);
-						  $thumb_url = $thumb_url[0];
-					  } else {
-						  $thumb_url = $this->no_thumb_image();
-					  }
+						if( has_post_thumbnail() ) {
+							$thumb_id = get_post_thumbnail_id();
+							$thumb_url = wp_get_attachment_image_src($thumb_id);
+							$thumb_url = $thumb_url[0];
+						} else {
+							$thumb_url = $this->no_thumb_image();
+						}
 
-					  $post_id = $npc_query->post->ID;
-					  $post_title = apply_filters( 'npc_post_title', '<span class="title">' . wp_kses_post( get_the_title() ) . '</span>', $post_id );
-			  		$post_permalink = apply_filters( 'npc_post_permalink', get_permalink(), $post_id );
-					  ?>
+						$post_id = $npc_query->post->ID;
+//						$post_title = apply_filters( 'npc_post_title', '<span class="title">' . wp_kses_post( get_the_title() ) . '</span>', $post_id );
+						$post_title = apply_filters( 'npc_post_title', wp_kses_post( get_the_title() ), $post_id );
+						$post_permalink = apply_filters( 'npc_post_permalink', get_permalink(), $post_id );
+					  	?>
 						<li>
 							<a href="<?php echo esc_url( $post_permalink ); ?>" title="<?php echo esc_attr( $post_title ); ?>">
 								<figure>
 									<img src="<?php echo esc_url( $thumb_url ); ?>" width="<?php echo esc_attr( $width ); ?>" height="<?php echo esc_attr( $height ); ?>" alt="<?php echo esc_attr( $post_title ); ?>" title="<?php echo esc_attr( $post_title ); ?>"/>
 								</figure>
 								<div class="detail">
-									<?php echo $post_title; ?>
+									<span class="title"><?php echo $post_title; ?></span>
 									<?php echo $post_date; ?>
 								</div>
 							</a>
 						</li>
 					  <?php
-				  endwhile;
-			  else :
-				  ?>
-								<p>no post</p>
-			  <?php endif; wp_reset_postdata(); ?>
-					</ul>
-
+					endwhile;
+			  	else :
+				?>
+					<p>no post</p>
+				<?php endif; wp_reset_postdata(); ?>
+				</ul>
 			<?php
 			echo $after_widget;
 		}
 
 		/** @see WP_Widget::update **/
 		// updates each widget instance when user clicks the "save" button
-		function update($new_instance, $old_instance) {
+		function update( $new_instance, $old_instance ) {
 
 			$instance = $old_instance;
 
@@ -172,21 +193,21 @@ if ( !class_exists('NewpostCatch') ) {
 			$instance['date']['active']		= $new_instance['date']['active'];
 			$instance['ignore_check']['active']	= $new_instance['ignore_check']['active'];
 			$instance['css']['active']		= $new_instance['css']['active'];
-			$instance['post_type']			= !empty($new_instance['post_type']) ? $new_instance['post_type'] : 'post';
+			$instance['post_type']			= ! empty( $new_instance['post_type'] ) ? $new_instance['post_type'] : 'post';
 
-			update_option('newpost_catch', $instance);
+			update_option( 'newpost_catch', $instance );
 
 			return $instance;
 		}
 
 		/** @see WP_Widget::form **/
-		function form($instance) {
+		function form( $instance ) {
 
 			// define default value
 			$defaults = array(
-				'title'		=> __('LatestPost(s)' , 'newpost-catch'),
-				'width'		=> 10,
-				'height'	=> 10,
+				'title'		=> __( 'LatestPost(s)' , 'newpost-catch' ),
+				'width'		=> 100,
+				'height'	=> 100,
 				'number'	=> 5,
 				'date'		=> array( 'active' => false ),
 				'ignore_check'	=> array( 'active' => false ),
@@ -202,7 +223,7 @@ if ( !class_exists('NewpostCatch') ) {
 						<input id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" class="widefat" value="<?php echo esc_attr($instance['title']); ?>" />
 					</p>
 					<p>
-			  <?php _e('Thumbnail Size' , 'newpost-catch'); ?><br />
+			  <?php _e( 'Thumbnail Size' , 'newpost-catch' ); ?><br />
 						<label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Width' , 'newpost-catch'); ?></label>
 						<input id="<?php echo $this->get_field_id('width'); ?>" name="<?php echo $this->get_field_name( 'width' ); ?>" type="text" style="width:50px" value="<?php echo esc_attr($instance['width']); ?>" /> px
 						<br />
@@ -222,7 +243,7 @@ if ( !class_exists('NewpostCatch') ) {
 					<p>
 						<input type="checkbox" class="checkbox" value='1' <?php if($instance['css']['active']){ echo 'checked="checked"'; } else { echo ''; } ?> id="<?php echo $this->get_field_id( 'css' ); ?>" name="<?php echo $this->get_field_name( 'css' ); ?>" /> <label for="<?php echo $this->get_field_id( 'css' ); ?>"><?php _e('Use default css', 'newpost-catch'); ?></label>
 					</p>
-			<?php _e('Post types' , 'newpost-catch'); ?><br />
+			<?php _e( 'Post types' , 'newpost-catch' ); ?><br />
 			<?php
 			$args = array(
 				'public'   => true,
@@ -248,11 +269,11 @@ if ( !class_exists('NewpostCatch') ) {
 						</p>
 			<?php } ?>
 					<p>
-			  <?php _e('Use shortcode' , 'newpost-catch'); ?>
-			  <?php _e('Can use the shortcode in a textwidget and theme files.' , 'newpost-catch'); ?> <a href="http://wordpress.org/plugins/newpost-catch/faq/" target="_blank">FAQ</a>
+			  <?php _e( 'Use shortcode' , 'newpost-catch' ); ?>
+			  <?php _e( 'Can use the shortcode in a textwidget and theme files.' , 'newpost-catch' ); ?> <a href="http://wordpress.org/plugins/newpost-catch/faq/" target="_blank">FAQ</a>
 					</p>
 					<p>
-			  <?php _e('Support' , 'newpost-catch'); ?>
+			  <?php _e( 'Support' , 'newpost-catch' ); ?>
 						<a href="https://support.animagate.com/community/" target="_blank">User Community</a>
 					</p>
 			<?php
