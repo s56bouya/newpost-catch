@@ -3,11 +3,12 @@
 Plugin Name: Newpost Catch
 Plugin URI: http://www.imamura.biz/blog/newpost-catch/
 Description: Thumbnails in new articles setting widget.
-Version: 1.3.19
+Version: 1.3.20
 Author: Tetsuya Imamura
 Text Domain: newpost-catch
 Author URI: http://www.imamura.biz/blog/
-License: GPL2
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
 
 // Include
