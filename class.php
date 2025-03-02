@@ -136,7 +136,6 @@ if ( ! class_exists('NewpostCatch') ) {
 				<?php
 				if( $npc_query->have_posts() ) :
 					while( $npc_query->have_posts() ) : $npc_query->the_post();
-						$post_date = ( isset( $instance['date']['active'] ) && $instance['date']['active'] == 1 ) ? '<span class="date">' . get_the_time( get_option('date_format') ) . '</span>' : '';
 
 						if( has_post_thumbnail() ) {
 							$thumb_id = get_post_thumbnail_id();
@@ -149,6 +148,7 @@ if ( ! class_exists('NewpostCatch') ) {
 						$post_id = $npc_query->post->ID;
 						$post_title = apply_filters( 'npc_post_title', get_the_title(), $post_id );
 						$post_permalink = apply_filters( 'npc_post_permalink', get_permalink(), $post_id );
+						$post_date = ( isset( $instance['date']['active'] ) && $instance['date']['active'] == 1 ) ? '<span class="date">' . get_the_time( get_option('date_format') ) . '</span>' : '';						
 					  	?>
 						<li>
 							<a href="<?php echo esc_url( $post_permalink ); ?>" title="<?php echo esc_attr( $post_title ); ?>">
@@ -156,7 +156,7 @@ if ( ! class_exists('NewpostCatch') ) {
 									<img src="<?php echo esc_url( $thumb_url ); ?>" width="<?php echo esc_attr( $width ); ?>" height="<?php echo esc_attr( $height ); ?>" alt="<?php echo esc_attr( $post_title ); ?>" title="<?php echo esc_attr( $post_title ); ?>"/>
 								</figure>
 								<div class="detail">
-									<span class="title"><?php echo wp_kses_post( $post_title ); ?></span>
+									<span class="title"><?php echo esc_html( $post_title ); ?></span>
 									<?php echo wp_kses_post( $post_date ); ?>
 								</div>
 							</a>
@@ -218,29 +218,29 @@ if ( ! class_exists('NewpostCatch') ) {
 			$instance = wp_parse_args( (array) $instance, $defaults );
 			?>
 					<p>
-						<label for="<?php echo esc_html( $this->get_field_id('title') ); ?>"><?php esc_html_e('Title' , 'newpost-catch'); ?></label>
-						<input id="<?php echo esc_html( $this->get_field_id('title') ); ?>" name="<?php echo esc_html( $this->get_field_name('title') ); ?>" type="text" class="widefat" value="<?php echo esc_attr($instance['title']); ?>" />
+						<label for="<?php echo esc_attr( $this->get_field_id('title') ); ?>"><?php esc_html_e('Title' , 'newpost-catch'); ?></label>
+						<input id="<?php echo esc_attr( $this->get_field_id('title') ); ?>" name="<?php echo esc_attr( $this->get_field_name('title') ); ?>" type="text" class="widefat" value="<?php echo esc_attr($instance['title']); ?>" />
 					</p>
 					<p>
 			  <?php esc_html_e( 'Thumbnail Size' , 'newpost-catch' ); ?><br />
-						<label for="<?php echo esc_html( $this->get_field_id('width') ); ?>"><?php esc_html_e('Width' , 'newpost-catch'); ?></label>
-						<input id="<?php echo esc_html( $this->get_field_id('width') ); ?>" name="<?php echo esc_html( $this->get_field_name( 'width' ) ); ?>" type="text" style="width:50px" value="<?php echo esc_attr($instance['width']); ?>" /> px
+						<label for="<?php echo esc_attr( $this->get_field_id('width') ); ?>"><?php esc_html_e('Width' , 'newpost-catch'); ?></label>
+						<input id="<?php echo esc_attr( $this->get_field_id('width') ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'width' ) ); ?>" type="text" style="width:50px" value="<?php echo esc_attr($instance['width']); ?>" /> px
 						<br />
-						<label for="<?php echo esc_html( $this->get_field_id('height') ); ?>"><?php esc_html_e('Height' , 'newpost-catch'); ?></label>
-						<input id="<?php echo esc_html( $this->get_field_id('height') ); ?>" name="<?php echo esc_html( $this->get_field_name('height') ); ?>" type="text" style="width:50px;" value="<?php echo esc_attr($instance['height']); ?>" /> px
+						<label for="<?php echo esc_attr( $this->get_field_id('height') ); ?>"><?php esc_html_e('Height' , 'newpost-catch'); ?></label>
+						<input id="<?php echo esc_attr( $this->get_field_id('height') ); ?>" name="<?php echo esc_attr( $this->get_field_name('height') ); ?>" type="text" style="width:50px;" value="<?php echo esc_attr($instance['height']); ?>" /> px
 					</p>
 					<p>
-						<label for="<?php echo esc_html( $this->get_field_id('number') ); ?>"><?php esc_html_e('Show post(s)' , 'newpost-catch'); ?></label>
-						<input style="width:30px;" id="<?php echo esc_html( $this->get_field_id('number') ); ?>" name="<?php echo esc_html( $this->get_field_name('number') ); ?>" type="text" value="<?php echo esc_attr($instance['number']); ?>" /> <?php esc_html_e('Post(s)', 'newpost-catch'); ?>
+						<label for="<?php echo esc_attr( $this->get_field_id('number') ); ?>"><?php esc_html_e('Show post(s)' , 'newpost-catch'); ?></label>
+						<input style="width:30px;" id="<?php echo esc_attr( $this->get_field_id('number') ); ?>" name="<?php echo esc_attr( $this->get_field_name('number') ); ?>" type="text" value="<?php echo esc_attr($instance['number']); ?>" /> <?php esc_html_e('Post(s)', 'newpost-catch'); ?>
 					</p>
 					<p>
-						<input type="checkbox" class="checkbox" value='1' <?php echo ($instance['date']['active']) ? 'checked="checked"' : ''; ?> id="<?php echo esc_html( $this->get_field_id( 'date' ) ); ?>" name="<?php echo esc_html( $this->get_field_name( 'date' ) ); ?>" /> <label for="<?php echo esc_html( $this->get_field_id( 'date' ) ); ?>"><?php esc_html_e('Display date', 'newpost-catch'); ?></label>
+						<input type="checkbox" class="checkbox" value='1' <?php echo ($instance['date']['active']) ? 'checked="checked"' : ''; ?> id="<?php echo esc_attr( $this->get_field_id( 'date' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'date' ) ); ?>" /> <label for="<?php echo esc_attr( $this->get_field_id( 'date' ) ); ?>"><?php esc_html_e('Display date', 'newpost-catch'); ?></label>
 					</p>
 					<p>
-						<input type="checkbox" class="checkbox" value='1' <?php echo ($instance['ignore_check']['active']) ? 'checked="checked"' : ''; ?> id="<?php echo esc_html( $this->get_field_id( 'ignore_check' ) ); ?>" name="<?php echo esc_html( $this->get_field_name( 'ignore_check' ) ); ?>" /> <label for="<?php echo esc_html( $this->get_field_id( 'ignore_check' ) ); ?>"><?php esc_html_e('Display sticky post', 'newpost-catch'); ?></label>
+						<input type="checkbox" class="checkbox" value='1' <?php echo ($instance['ignore_check']['active']) ? 'checked="checked"' : ''; ?> id="<?php echo esc_attr( $this->get_field_id( 'ignore_check' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'ignore_check' ) ); ?>" /> <label for="<?php echo esc_attr( $this->get_field_id( 'ignore_check' ) ); ?>"><?php esc_html_e('Display sticky post', 'newpost-catch'); ?></label>
 					</p>
 					<p>
-						<input type="checkbox" class="checkbox" value='1' <?php if($instance['css']['active']){ echo 'checked="checked"'; } else { echo ''; } ?> id="<?php echo esc_html( $this->get_field_id( 'css' ) ); ?>" name="<?php echo esc_html( $this->get_field_name( 'css' ) ); ?>" /> <label for="<?php echo esc_html( $this->get_field_id( 'css' ) ); ?>"><?php esc_html_e('Use default css', 'newpost-catch'); ?></label>
+						<input type="checkbox" class="checkbox" value='1' <?php if($instance['css']['active']){ echo 'checked="checked"'; } else { echo ''; } ?> id="<?php echo esc_attr( $this->get_field_id( 'css' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'css' ) ); ?>" /> <label for="<?php echo esc_attr( $this->get_field_id( 'css' ) ); ?>"><?php esc_html_e('Use default css', 'newpost-catch'); ?></label>
 					</p>
 			<?php esc_html_e( 'Post types' , 'newpost-catch' ); ?><br />
 			<?php
@@ -255,15 +255,15 @@ if ( ! class_exists('NewpostCatch') ) {
 			foreach ( $post_types as $post_type ) {
 				if( $post_type->name !== 'attachment' ){
 					?>
-						<p><input type="radio" id="<?php echo esc_html( $this->get_field_name($post_type->name) ); ?>" name="<?php echo esc_html( $this->get_field_name('post_type') ); ?>" value="<?php echo esc_html( $post_type->name ); ?>" <?php echo ( $instance['post_type'] == esc_html( $post_type->name ) ) ? 'checked="checked"' : ''; ?> > <label for="<?php echo esc_html( $this->get_field_name($post_type->name) ); ?>"><?php echo esc_html( $post_type->labels->singular_name . '(' . $post_type->name . ')' ); ?></label></p>
+						<p><input type="radio" id="<?php echo esc_attr( $this->get_field_name($post_type->name) ); ?>" name="<?php echo esc_attr( $this->get_field_name('post_type') ); ?>" value="<?php echo esc_attr( $post_type->name ); ?>" <?php echo ( $instance['post_type'] == $post_type->name ) ? 'checked="checked"' : ''; ?> > <label for="<?php echo esc_attr( $this->get_field_name($post_type->name) ); ?>"><?php echo esc_html( $post_type->labels->singular_name . '(' . $post_type->name . ')' ); ?></label></p>
 					<?php
 				}
 			}
 			?>
 			<?php if( $instance['post_type'] == 'post' ){ ?>
 						<p>
-							<label for="<?php echo esc_html( $this->get_field_id('cat') ); ?>"><?php esc_html_e('Display category(ies)' , 'newpost-catch'); ?></label>
-							<input id="<?php echo esc_html( $this->get_field_id('cat') ); ?>" name="<?php echo esc_html( $this->get_field_name('cat') ); ?>" type="text" class="widefat" value="<?php echo esc_attr($instance['cat']); ?>" />
+							<label for="<?php echo esc_attr( $this->get_field_id('cat') ); ?>"><?php esc_html_e('Display category(ies)' , 'newpost-catch'); ?></label>
+							<input id="<?php echo esc_attr( $this->get_field_id('cat') ); ?>" name="<?php echo esc_attr( $this->get_field_name('cat') ); ?>" type="text" class="widefat" value="<?php echo esc_attr($instance['cat']); ?>" />
 							<span><a href="<?php echo esc_url( get_bloginfo('url') ) . '/wp-admin/edit-tags.php?taxonomy=category'; ?>"><?php esc_html_e('Check the category ID' , 'newpost-catch'); ?></a></span>
 						</p>
 			<?php } ?>
@@ -342,8 +342,6 @@ if ( !class_exists( 'NewpostCatch_SC' ) ) {
 				while( $npc_sc_query->have_posts() ) :
 					$npc_sc_query->the_post();
 
-					$post_date = ( $date == true ) ? '<span class="date">' . esc_html( get_the_time( get_option('date_format') ) ) . '</span>' : '';
-
 					$thumb_url = '';
 					if( has_post_thumbnail( get_the_ID() ) ) {
 						$thumb_id = get_post_thumbnail_id( get_the_ID() );
@@ -354,8 +352,9 @@ if ( !class_exists( 'NewpostCatch_SC' ) ) {
 					}
 
 					$post_id = $npc_sc_query->post->ID;
-					$post_title = apply_filters( 'npc_sc_post_title', '<span class="title">' . wp_kses_post( get_the_title() ) . '</span>', $post_id );
-					$post_permalink = apply_filters( 'npc_sc_post_permalink', get_permalink(), $post_id );
+					$post_title = apply_filters( 'npc_sc_post_title', '<span class="title">' . esc_html( get_the_title() ) . '</span>', $post_id );
+					$post_permalink = apply_filters( 'npc_sc_post_permalink', esc_url( get_permalink() ), $post_id );
+					$post_date = ( $date == true ) ? '<span class="date">' . esc_html( get_the_time( get_option('date_format') ) ) . '</span>' : '';
 
 					$html .= '<li><a href="' . esc_url( $post_permalink ) . '" title="' . esc_attr( $post_title ) . '">';
 					$html .= '<figure><img src="' . esc_url( $thumb_url ) . '" width="' . esc_attr( $width ) . '" height="' . esc_attr( $height ) . '" alt="' . esc_attr( $post_title ) . '" title="' . esc_attr( $post_title ) . '" /></figure>';
